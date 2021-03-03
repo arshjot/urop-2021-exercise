@@ -26,12 +26,15 @@ The exercise consists in implementing a genetic algorithm that generates a seque
 
 1. The fitness function needs to measure the distance between the starting point of the track (green in figure) and the end point (black). Such distance needs to be minimized;
 2. The length of the sequence of instructions is fixed and indicated in the file [config.py](https://github.com/testingautomated-usi/urop-2021-exercise/blob/master/config.py) with the variable name CHROMOSOME_LENGTH;
-3. The generated tracks should not contain any loop;
-4. The sequence of instructions needs to start and end with an S command;
-5. After a DY command there needs to be either a R command or a L command (i.e. not a S command);
-6. A L or R command should be followed by either a DY or a S command
+3. The start point of the track is given and should not be changed (see the [generate.py](https://github.com/testingautomated-usi/urop-2021-exercise/blob/master/track_generator/generator.py#L15) at line 15);
+4. The generated tracks should not contain any loop, i.e. the track cannot loop back onto itself. For example situations like the one in the figure below should not happen;
+5. The sequence of instructions needs to start and end with an S command;
+6. After a DY command there needs to be either a R command or a L command (i.e. not a S command);
+7. A L or R command should be followed by either a DY or a S command
 
 The solution to this problem is not unique, i.e. there are several tracks with the same fitness value that satisfy the requirements above. However, the fitness value of the best chromosome (i.e. sequence of instructions) produced by your genetic algorithm should be as small as possible. In any case you can visually verify your solution by plotting the points of the track to see both that start and end points are close to each other and that the track has no loops.
+
+![alt text](https://github.com/testingautomated-usi/urop-2021-exercise/blob/master/loop-example.png)
 
 ## Installation
 
