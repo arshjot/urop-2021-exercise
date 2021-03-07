@@ -40,15 +40,15 @@ Two parents are randomly selected from the mating pool. They are combined by mix
 For mutation, a portion of track of the offspring obtained after crossover is selected and modified randomly. The number of offsprings to be mutated is determined by MUTATION_PROB.
 
 ## Results
-Figure 1 shows some random population samples from 15 generations (start point is shown in green and end point in black). Figure 4 shows the evolution of min, mean, and max fitness of the population.
+Figure 1 shows some random population samples from 15 generations (start point is shown in green and end point in black). Figure 2 shows the evolution of min, mean, and max fitness of the population.
 
 <p align="center">
   <img src="./graphics/fitness_evolution.png">
-  <b>Fig.4 Change in fitness across generations</b><br>
+  <b>Fig.2 Change in fitness across generations</b><br>
 </p>
 
-Multiple best solutions were obtained after 15 generations with a fitness value of 0.0005. One of these solutions has been shown in figure 5. 
+Multiple best solutions were obtained after 15 generations with a fitness value of 0.0005. One of these solutions has been shown in figure 3. 
 <p align="center">
   <img src="./graphics/best_solution.png">
-  <b>Fig.5 One of the best solutions obtained</b><br>
+  <b>Fig.3 Best solution</b><br>
 </p>
