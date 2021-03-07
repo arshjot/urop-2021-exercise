@@ -1,48 +1,54 @@
-# Exercise for 2021 UROP application "Developing Self-Driving Car Autopilots using Reinforcement Learning Algorithms"
-
-The task consists in implementing a Genetic Algorithm that generates closed tracks for the [DonkeyCar](https://www.donkeycar.com/). 
-The code that generates the track starting from a list of instructions is already given (see [generator.py](https://github.com/testingautomated-usi/urop-2021-exercise/blob/master/track_generator/generator.py)).
-
-Each [instruction](https://github.com/testingautomated-usi/urop-2021-exercise/blob/master/ga/chromosome_elem.py) is composed of a [command](https://github.com/testingautomated-usi/urop-2021-exercise/blob/master/track_generator/command.py), 
-that determines the direction of the track and a value (i.e. a floating point number), that specifies the number of points for that particular command. 
-The command "S" stands for straight and its associated value says the number of straight points for that track segment. The command "DY" means a rotation around
-the Z axis, i.e. a curve. The value associated with "DY" indicates the amount of rotation in degrees. 
-After a command "DY" there must be either a command "R" or "L" which stands respectively for right and left curve. 
-The value of such commands indicates the number of points in the curve for the track arc that determine the curve.
-
-### Example Track
-
-Below is the track generated for the sequence of instructions \[(S 11), (DY 15.5), (R 9), (S 10)\].
+# Solution for 2021 UROP application "Developing Self-Driving Car Autopilots using Reinforcement Learning Algorithms"
 
 <p align="center">
-  <img src="https://github.com/testingautomated-usi/urop-2021-exercise/blob/master/track_example.png">
-  <b>Fig.1 Example track</b><br>
+  <img src="./graphics/generation_samples.gif">
+  <b>Fig.1 Evolution of the population across generations</b><br>
 </p>
 
+This repository contains the solution for the [2021 UROP application task](https://github.com/testingautomated-usi/urop-2021-exercise) which required implementing a Genetic Algorithm that generates closed tracks for the [DonkeyCar](https://www.donkeycar.com/). 
 
-The start point is indicated in green and after that there are 11 straight blue points as indicated by the instruction (S, 11). Then, there is a curve with a rotation of 15.5 degrees around the Z axis w.r.t. the straight line determined by the instruction (S, 11). The instruction indicating the rotation is (DY 15.5) which is followed by the instruction (R 9) that says to rotate for 15.5 degrees around the Z axis towards the right (with X increasing) 9 times (i.e. for a total of 139.5 degrees). After the red arc indicating the curve there is another track segment of 10 points (i.e. (S 10)) that include the end point of the track indicated in black.
+The code provided to generate the tracks has been reused. The code for implementing genetic algorithm is present in `ga/genetic_algorithm.py` which also uses some utility functions from `track_generator/utils.py`.
 
-## Instructions for the exercise
+To run the genetic algorithm, change the parameters in `config.py` (if required) and run:
+```bash
+python main.py
+```
 
-The exercise consists in implementing a genetic algorithm that generates a sequence of instructions for the track generator such that the resulting track forms a circuit as closed as possible. Below are the requirements that your solutions should have:
+### Genotype
 
-1. The fitness function needs to measure the distance between the starting point of the track (green in figure) and the end point (black). Such distance needs to be minimized;
-2. The length of the sequence of instructions is fixed and indicated in the file [config.py](https://github.com/testingautomated-usi/urop-2021-exercise/blob/master/config.py) with the variable name CHROMOSOME_LENGTH;
-3. The start point of the track is given and should not be changed (see the [generate.py](https://github.com/testingautomated-usi/urop-2021-exercise/blob/master/track_generator/generator.py#L15) at line 15);
-4. The generated tracks should not contain any loop, i.e. the track cannot loop back onto itself. For example situations like the one in the figure below (Fig. 2) should not happen;
-5. The sequence of instructions needs to start and end with an S command;
-6. After a DY command there needs to be either a R command or a L command (i.e. not a S command);
-7. A L or R command should be followed by either a DY or a S command
+The genotype consists of two arrays, each of length equal to CHROMOSOME_LENGTH:
+ 1) array containing integer type genes with a value of 0, 1, or 2 indicating the commands S, L, and R respectively.
+ 2) array containing float type genes with value in the interval [0, 360) representing the rotation degree corresponding to each command in the first array.
 
-The solution to this problem is not unique, i.e. there are several tracks with the same fitness value that satisfy the requirements above. However, the fitness value of the best chromosome (i.e. sequence of instructions) produced by your genetic algorithm should be as small as possible. In any case you can visually verify your solution by plotting the points of the track to see both that start and end points are close to each other and that the track has no loops.
+For example, the genotype for the sequence of instructions \[(S 6), (DY 15.5), (R 4), (S 3)\] will be:
+
+|   |   |   |   |   |   |   |   |   |   |   |   |   |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 0 | 0 | 0 | 0 | 0 | 0 | 2 | 2 | 2 | 2 | 0 | 0 | 0 |
+| 0 | 0 | 0 | 0 | 0 | 0 | 15.5 | 15.5 | 15.5 | 15.5 | 0 | 0 | 0 |
+
+### Initial population
+The initial population of size POPULATION_SIZE is generated randomly while satisfying the constraints specified in the exercise.
+
+### Selection
+According to TOP_SELECTION_RATIO, candidates with best fitness values are selected from the current population to form the mating pool for the next generation.
+
+### Crossover
+Two parents are randomly selected from the mating pool. They are combined by mixing their genotypes across a random crossover point to create an offspring for the next generation
+
+### Mutation
+For mutation, a portion of track of the offspring obtained after crossover is selected and modified randomly. The number of offsprings to be mutated is determined by MUTATION_PROB.
+
+## Results
+Figure 1 shows some random population samples from 15 generations (start point is shown in green and end point in black). Figure 4 shows the evolution of min, mean, and max fitness of the population.
 
 <p align="center">
-  <img src="https://github.com/testingautomated-usi/urop-2021-exercise/blob/master/loop-example.png">
-  <b>Fig.2 Example track with loop</b><br>
+  <img src="./graphics/fitness_evolution.png">
+  <b>Fig.4 Change in fitness across generations</b><br>
 </p>
 
-## Installation
-
-Install python on your machine (we used version 3.6) and install the requirements with `pip install -r requirements.txt`.
-If you execute [main.py](https://github.com/testingautomated-usi/urop-2021-exercise/blob/master/main.py) 
-you should see the plot above indicating that all the dependencies have been correctly installed.
+Multiple best solutions were obtained after 15 generations with a fitness value of 0.0005. One of these solutions has been shown in figure 5. 
+<p align="center">
+  <img src="./graphics/best_solution.png">
+  <b>Fig.5 One of the best solutions obtained</b><br>
+</p>
